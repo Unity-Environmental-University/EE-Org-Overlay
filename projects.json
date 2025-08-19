@@ -1,0 +1,26 @@
+{
+  "projects": [
+    {
+      "name": "Project X",
+      "priority": "High",
+      "status": "Active",
+      "start": "2025-08-01",
+      "end": "2025-10-15",
+      "description": "Short one-liner on the purpose/outcome.",
+      "link": "https://example.com/brief",
+      "contributors": [
+        { "unit": "BACC", "role": "Lead", "person": "Assistant Director" },
+        { "unit": "GRAD", "role": "LD" }
+      ]
+    },
+    {
+      "name": "Project Y",
+      "priority": "Medium",
+      "contributors": [
+        { "unit": "CI", "role": "LMD" },
+        { "unit": "PS", "role": "Lead" },
+        { "unit": "EE", "role": "Director of Cybernetic Design" }
+      ]
+    }
+  ]
+}
