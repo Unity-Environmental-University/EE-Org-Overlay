@@ -4,84 +4,80 @@
   <meta charset="UTF-8">
   <title>Org Chart + Project Overlay</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      margin: 2rem;
+    :root {
+      /* Priority accents */
+      --pri-high: #d32f2f;      /* red */
+      --pri-medium: #f59e0b;    /* amber */
+      --pri-low: #6b7280;       /* gray */
+
+      /* Status chips */
+      --st-inprogress-bg: #e0ecff;  --st-inprogress-border: #2563eb;  --st-inprogress-text:#1e3a8a;
+      --st-blocked-bg: #fff6da;     --st-blocked-border: #f59e0b;     --st-blocked-text:#7c4a02;
+      --st-dire-bg: #ffe4e6;        --st-dire-border: #e11d48;        --st-dire-text:#7f1d1d;
+
+      /* Role colors */
+      --role-lead: #2563eb;
+      --role-ld: #10b981;
+      --role-lmd: #f59e0b;
+      --role-exec-director: #6d28d9;
+      --role-director-of-cybernetic-design: #06b6d4;
+      --role-assistant-director-of-ld: #8b5cf6;
+      --role-lead-ld: #2563eb;
     }
-    .org-chart {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2rem;
-    }
-    .top-unit {
-      background: #fff;
-      border: 2px solid #333;
-      border-radius: 12px;
-      padding: 1rem;
-      width: 90%;
-      text-align: center;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
-    }
-    .units-row {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: nowrap;
-    }
-    .unit {
-      background: #fff;
-      border: 2px solid #333;
-      border-radius: 12px;
-      padding: 1rem;
-      min-width: 160px;
-      text-align: center;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
-    }
-    .team {  
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    .person {
-      background: #e8f1fb;
-      border: 1px solid #90b4e0;
-      border-radius: 8px;
-      padding: 0.5rem 1rem;
-    }
-    .projects {
-      margin-top: 3rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    .project {
-      background: #fff;
-      border: 2px solid #4caf50;
-      border-radius: 10px;
-      padding: 1rem;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
-    }
-    .project h3 {
-      margin: 0;
-      color: #2d7039;
-    }
-    .contributors {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    .tag {
-      background: #e1f7e6;
-      border: 1px solid #4caf50;
-      border-radius: 6px;
-      padding: 0.3rem 0.6rem;
-      font-size: 0.85rem;
-    }
+
+    body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 2rem; }
+
+    .org-chart { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
+
+    .top-unit, .unit { background: #fff; border: 2px solid #333; border-radius: 12px; padding: 1rem; box-shadow: 2px 2px 6px rgba(0,0,0,0.1); }
+
+    .top-unit { width: 90%; text-align: center; }
+    .units-row { display: flex; justify-content: center; gap: 2rem; flex-wrap: nowrap; }
+    .unit { min-width: 160px; text-align: center; }
+
+    .team { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+    .person { background: #e8f1fb; border: 1px solid #90b4e0; border-radius: 8px; padding: 0.5rem 1rem; }
+
+    /* Projects area */
+    .projects { margin-top: 3rem; display: flex; flex-direction: column; gap: 1rem; }
+    .project { background: #fff; border: 2px solid #e5e7eb; border-radius: 12px; padding: 1rem; box-shadow: 2px 2px 6px rgba(0,0,0,0.1); }
+    .project h3 { margin: 0 0 0.35rem 0; }
+    .contributors { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+
+    /* Priority accents on project cards */
+    .priority-high { border-left: 8px solid var(--pri-high); }
+    .priority-medium { border-left: 8px solid var(--pri-medium); }
+    .priority-low { border-left: 8px solid var(--pri-low); }
+
+    /* Chips */
+    .chip { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600; border: 1px solid transparent; }
+    .status-in-progress { background: var(--st-inprogress-bg); border-color: var(--st-inprogress-border); color: var(--st-inprogress-text); }
+    .status-blocked     { background: var(--st-blocked-bg);   border-color: var(--st-blocked-border);   color: var(--st-blocked-text); }
+    .status-dire        { background: var(--st-dire-bg);      border-color: var(--st-dire-border);      color: var(--st-dire-text); }
+
+    .priority-chip { opacity: 0.9; margin-left: 0.35rem; }
+    .priority-high-chip   { background: #fde2e2; color: #7f1d1d; border-color: var(--pri-high); }
+    .priority-medium-chip { background: #fff1db; color: #7a3e06; border-color: var(--pri-medium); }
+    .priority-low-chip    { background: #eceff1; color: #374151; border-color: var(--pri-low); }
+
+    /* Contributor tags with role colors */
+    .tag { background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.85rem; }
+    .tag .icon { margin-right: 0.35rem; }
+
+    .role-lead { background: #e8f0ff; border-color: var(--role-lead); }
+    .role-ld { background: #e6fbf4; border-color: var(--role-ld); }
+    .role-lmd { background: #fff4e0; border-color: var(--role-lmd); }
+    .role-exec-director { background: #efe7ff; border-color: var(--role-exec-director); }
+    .role-director-of-cybernetic-design { background: #e6fbff; border-color: var(--role-director-of-cybernetic-design); }
+    .role-assistant-director-of-ld { background: #efe7ff; border-color: var(--role-assistant-director-of-ld); }
+    .role-lead-ld { background: #e8f0ff; border-color: var(--role-lead); }
+
     .muted { color: #666; }
+
+    /* Legend */
+    .legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin: 1rem 0 0.5rem; align-items: center; }
+    .legend .swatch { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; }
+    .legend .swatch .box { width: 14px; height: 14px; border-radius: 4px; border: 1px solid #ccc; display: inline-block; }
   </style>
 </head>
 <body>
@@ -92,17 +88,15 @@
       <h2>EE Unit</h2>
       <div class="team">
         <div class="person"><strong>Exec Director (Exec + Product Dev)</strong>
-       <p> Lead</p>
+          <p>Instructional Product Design Spec.</p>
           <p>XR Sim Dev</p>
           <p>3D Animator</p>
-          </div>
+        </div>
         <div class="person"><strong>Director of Cybernetic Design (Learning Tech Unit)</strong>
-   
-          <p>Sol Dev</p>
+          <p>Solution Dev</p>
           <p>LTSS</p>
-          <p>Librarian</p>
-          </div>
-       
+          <p>Digital Learning Specialist</p>
+        </div>
       </div>
     </div>
 
@@ -110,7 +104,7 @@
       <div class="unit">
         <h2>BACC</h2>
         <div class="team">
-          <div class="person">Assistant Director</div>
+          <div class="person">Assistant Director of LD</div>
           <div class="person">LD</div>
           <div class="person">LMD</div>
         </div>
@@ -119,7 +113,7 @@
       <div class="unit">
         <h2>GRAD</h2>
         <div class="team">
-          <div class="person">Lead</div>
+          <div class="person">Lead LD</div>
           <div class="person">LD</div>
           <div class="person">LMD</div>
         </div>
@@ -128,7 +122,7 @@
       <div class="unit">
         <h2>CI</h2>
         <div class="team">
-          <div class="person">Lead</div>
+          <div class="person">Lead LD</div>
           <div class="person">LD</div>
           <div class="person">LMD</div>
         </div>
@@ -145,6 +139,15 @@
     </div>
   </div>
 
+  <!-- Legend -->
+  <div class="legend">
+    <div class="swatch"><span class="box" style="background:#e8f0ff;border-color:var(--role-lead)"></span>⭐ Lead</div>
+    <div class="swatch"><span class="box" style="background:#e6fbf4;border-color:var(--role-ld)"></span>📘 LD</div>
+    <div class="swatch"><span class="box" style="background:#fff4e0;border-color:var(--role-lmd)"></span>🎨 LMD</div>
+    <div class="swatch"><span class="box" style="background:#efe7ff;border-color:var(--role-exec-director)"></span>🧭 Exec Director</div>
+    <div class="swatch"><span class="box" style="background:#e6fbff;border-color:var(--role-director-of-cybernetic-design)"></span>🤖 Director of Cybernetic Design</div>
+  </div>
+
   <!-- Projects render here from projects.json -->
   <div class="projects" id="projects">
     <div class="project">
@@ -153,15 +156,64 @@
   </div>
 
   <script>
-    // Order for sorting priorities visually (High → Medium → Low)
+    // Priority order for sorting (High → Medium → Low)
     const PRIORITY_ORDER = { High: 1, Medium: 2, Low: 3 };
 
+    // Optional: Within the same priority, surface more urgent statuses first
+    const STATUS_ORDER = { 'Dire': 1, 'Blocked': 2, 'In Progress': 3 };
+
+    const ROLE_ICONS = {
+      'lead': '⭐',
+      'ld': '📘',
+      'lmd': '🎨',
+      'exec director': '🧭',
+      'director of cybernetic design': '🤖',
+      'assistant director of ld': '🧩',
+      'lead ld': '⭐',
+      'solution dev': '🛠️',
+      'ltss': '🧰',
+      'digital learning specialist': '🧪',
+      'xr sim dev': '🕶️',
+      '3d animator': '🧊'
+    };
+
+    function slugify(str='') { return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^[-]+|[-]+$/g, ''); }
+
+    function iconForRole(role='') {
+      const key = role.trim().toLowerCase();
+      return ROLE_ICONS[key] || '';
+    }
+
     function tagText(c) {
-      // Compose a compact label like: "Lead (BACC) - Dana" if person is provided
-      const role = c.role ? c.role : "";
-      const unit = c.unit ? ` (${c.unit})` : "";
-      const person = c.person ? ` - ${c.person}` : "";
-      return `${role}${unit}${person}`.trim();
+      const role = c.role ? c.role : '';
+      const unit = c.unit ? ` (${c.unit})` : '';
+      const person = c.person ? ` - ${c.person}` : '';
+      const icon = iconForRole(role);
+      return `${icon ? icon + ' ' : ''}${role}${unit}${person}`.trim();
+    }
+
+    function classForStatus(status='') {
+      const s = status.toLowerCase();
+      if (s === 'in progress' || s === 'in-progress') return 'status-in-progress';
+      if (s === 'blocked') return 'status-blocked';
+      if (s === 'dire') return 'status-dire';
+      return '';
+    }
+
+    function classForPriority(priority='') {
+      const p = priority.toLowerCase();
+      if (p === 'high') return 'priority-high';
+      if (p === 'medium') return 'priority-medium';
+      if (p === 'low') return 'priority-low';
+      return '';
+    }
+
+    function chipForPriority(priority='') {
+      const p = priority.toLowerCase();
+      if (p === 'high') return 'priority-chip priority-high-chip';
+      if (p === 'medium') return 'priority-chip priority-medium-chip';
+      if (p === 'low') return 'priority-chip priority-low-chip';
+      return 'priority-chip';
     }
 
     function renderProjects(data) {
@@ -171,16 +223,19 @@
       const projects = (data && Array.isArray(data.projects)) ? data.projects : [];
 
       projects
-        .slice() // non-destructive
+        .slice()
         .sort((a, b) => {
           const pA = PRIORITY_ORDER[a.priority] || 99;
           const pB = PRIORITY_ORDER[b.priority] || 99;
           if (pA !== pB) return pA - pB;
+          const sA = STATUS_ORDER[a.status] || 99;
+          const sB = STATUS_ORDER[b.status] || 99;
+          if (sA !== sB) return sA - sB;
           return (a.name || '').localeCompare(b.name || '');
         })
         .forEach(p => {
           const card = document.createElement('div');
-          card.className = 'project';
+          card.className = `project ${classForPriority(p.priority || '')}`.trim();
 
           const title = document.createElement('h3');
           title.textContent = p.name || 'Untitled Project';
@@ -189,11 +244,27 @@
           const meta = document.createElement('p');
           const parts = [];
           if (p.priority) parts.push(`Priority: ${p.priority}`);
-          if (p.status) parts.push(`Status: ${p.status}`);
-          if (p.start) parts.push(`Start: ${p.start}`);
-          if (p.end) parts.push(`End: ${p.end}`);
-          meta.textContent = parts.join('  •  ');
-          card.appendChild(meta);
+          if (p.status) {
+            const chip = document.createElement('span');
+            chip.className = `chip ${classForStatus(p.status)}`.trim();
+            chip.textContent = p.status;
+            parts.push('Status: '); // placeholder, we'll insert chip after
+            meta.textContent = parts.join('  •  ');
+            card.appendChild(meta);
+            meta.appendChild(chip);
+          } else {
+            meta.textContent = parts.join('  •  ');
+            card.appendChild(meta);
+          }
+
+          // Add a small priority chip next to title
+          if (p.priority) {
+            const pri = document.createElement('span');
+            pri.className = chipForPriority(p.priority);
+            pri.textContent = p.priority;
+            title.appendChild(document.createTextNode(' '));
+            title.appendChild(pri);
+          }
 
           if (p.description) {
             const d = document.createElement('p');
@@ -205,7 +276,8 @@
           contribs.className = 'contributors';
           (p.contributors || []).forEach(c => {
             const tag = document.createElement('div');
-            tag.className = 'tag';
+            const roleSlug = slugify(c.role || '');
+            tag.className = `tag ${roleSlug ? 'role-' + roleSlug : ''}`.trim();
             tag.textContent = tagText(c);
             contribs.appendChild(tag);
           });
@@ -213,9 +285,7 @@
 
           if (p.link) {
             const a = document.createElement('a');
-            a.href = p.link;
-            a.target = '_blank';
-            a.rel = 'noopener noreferrer';
+            a.href = p.link; a.target = '_blank'; a.rel = 'noopener noreferrer';
             a.textContent = 'Project brief';
             card.appendChild(a);
           }
