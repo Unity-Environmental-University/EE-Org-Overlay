@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Org Chart + Project Overlay</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 2rem;
+    }
+    .org-chart {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+    .top-unit {
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 12px;
+      padding: 1rem;
+      width: 90%;
+      text-align: center;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    }
+    .units-row {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: nowrap;
+    }
+    .unit {
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 12px;
+      padding: 1rem;
+      min-width: 160px;
+      text-align: center;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    }
+    .team {  
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .person {
+      background: #e8f1fb;
+      border: 1px solid #90b4e0;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+    }
+    .projects {
+      margin-top: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .project {
+      background: #fff;
+      border: 2px solid #4caf50;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    }
+    .project h3 {
+      margin: 0;
+      color: #2d7039;
+    }
+    .contributors {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .tag {
+      background: #e1f7e6;
+      border: 1px solid #4caf50;
+      border-radius: 6px;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.85rem;
+    }
+    .muted { color: #666; }
+  </style>
+</head>
+<body>
+  <h1>Org Chart + Project Overlay</h1>
+  
+  <div class="org-chart">
+    <div class="top-unit">
+      <h2>EE Unit</h2>
+      <div class="team">
+        <div class="person"><strong>Exec Director (Exec + Product Dev)</strong>
+       <p> Lead</p>
+          <p>XR Sim Dev</p>
+          <p>3D Animator</p>
+          </div>
+        <div class="person"><strong>Director of Cybernetic Design (Learning Tech Unit)</strong>
+   
+          <p>Sol Dev</p>
+          <p>LTSS</p>
+          <p>Librarian</p>
+          </div>
+       
+      </div>
+    </div>
+
+    <div class="units-row">
+      <div class="unit">
+        <h2>BACC</h2>
+        <div class="team">
+          <div class="person">Assistant Director</div>
+          <div class="person">LD</div>
+          <div class="person">LMD</div>
+        </div>
+      </div>
+
+      <div class="unit">
+        <h2>GRAD</h2>
+        <div class="team">
+          <div class="person">Lead</div>
+          <div class="person">LD</div>
+          <div class="person">LMD</div>
+        </div>
+      </div>
+
+      <div class="unit">
+        <h2>CI</h2>
+        <div class="team">
+          <div class="person">Lead</div>
+          <div class="person">LD</div>
+          <div class="person">LMD</div>
+        </div>
+      </div>
+
+      <div class="unit">
+        <h2>PS</h2>
+        <div class="team">
+          <div class="person">Lead</div>
+          <div class="person">LD</div>
+          <div class="person">LMD</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Projects render here from projects.json -->
+  <div class="projects" id="projects">
+    <div class="project">
+      <p class="muted">Loading projects…</p>
+    </div>
+  </div>
+
+  <script>
+    // Order for sorting priorities visually (High → Medium → Low)
+    const PRIORITY_ORDER = { High: 1, Medium: 2, Low: 3 };
+
+    function tagText(c) {
+      // Compose a compact label like: "Lead (BACC) - Dana" if person is provided
+      const role = c.role ? c.role : "";
+      const unit = c.unit ? ` (${c.unit})` : "";
+      const person = c.person ? ` - ${c.person}` : "";
+      return `${role}${unit}${person}`.trim();
+    }
+
+    function renderProjects(data) {
+      const container = document.getElementById('projects');
+      container.innerHTML = '';
+
+      const projects = (data && Array.isArray(data.projects)) ? data.projects : [];
+
+      projects
+        .slice() // non-destructive
+        .sort((a, b) => {
+          const pA = PRIORITY_ORDER[a.priority] || 99;
+          const pB = PRIORITY_ORDER[b.priority] || 99;
+          if (pA !== pB) return pA - pB;
+          return (a.name || '').localeCompare(b.name || '');
+        })
+        .forEach(p => {
+          const card = document.createElement('div');
+          card.className = 'project';
+
+          const title = document.createElement('h3');
+          title.textContent = p.name || 'Untitled Project';
+          card.appendChild(title);
+
+          const meta = document.createElement('p');
+          const parts = [];
+          if (p.priority) parts.push(`Priority: ${p.priority}`);
+          if (p.status) parts.push(`Status: ${p.status}`);
+          if (p.start) parts.push(`Start: ${p.start}`);
+          if (p.end) parts.push(`End: ${p.end}`);
+          meta.textContent = parts.join('  •  ');
+          card.appendChild(meta);
+
+          if (p.description) {
+            const d = document.createElement('p');
+            d.textContent = p.description;
+            card.appendChild(d);
+          }
+
+          const contribs = document.createElement('div');
+          contribs.className = 'contributors';
+          (p.contributors || []).forEach(c => {
+            const tag = document.createElement('div');
+            tag.className = 'tag';
+            tag.textContent = tagText(c);
+            contribs.appendChild(tag);
+          });
+          if (contribs.childElementCount) card.appendChild(contribs);
+
+          if (p.link) {
+            const a = document.createElement('a');
+            a.href = p.link;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.textContent = 'Project brief';
+            card.appendChild(a);
+          }
+
+          container.appendChild(card);
+        });
+
+      if (!container.childElementCount) {
+        const empty = document.createElement('div');
+        empty.className = 'project';
+        empty.innerHTML = '<p class="muted">No projects found. Add some to <code>projects.json</code>.</p>';
+        container.appendChild(empty);
+      }
+    }
+
+    fetch('projects.json', { cache: 'no-store' })
+      .then(r => r.json())
+      .then(renderProjects)
+      .catch(err => {
+        console.error('Failed to load projects.json', err);
+        const container = document.getElementById('projects');
+        container.innerHTML = '<div class="project"><p class="muted">Could not load <code>projects.json</code>.</p></div>';
+      });
+  </script>
+</body>
+</html>
