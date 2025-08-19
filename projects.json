@@ -1,25 +1,32 @@
 {
   "projects": [
     {
-      "name": "Project X",
+      "name": "New Program Launch",
       "priority": "High",
-      "status": "Active",
-      "start": "2025-08-01",
-      "end": "2025-10-15",
-      "description": "Short one-liner on the purpose/outcome.",
-      "link": "https://example.com/brief",
+      "status": "Dire",
+      "description": "Accreditation blockers; exec support needed.",
       "contributors": [
-        { "unit": "BACC", "role": "Lead", "person": "Assistant Director" },
-        { "unit": "GRAD", "role": "LD" }
+        { "unit": "BACC", "role": "Lead", "person": "Assistant Director of LD" },
+        { "unit": "EE", "role": "Director of Cybernetic Design" }
+      ],
+      "link": "https://example.com/brief"
+    },
+    {
+      "name": "Assessment Redesign",
+      "priority": "Medium",
+      "status": "In Progress",
+      "contributors": [
+        { "unit": "GRAD", "role": "LD" },
+        { "unit": "CI", "role": "LMD" }
       ]
     },
     {
-      "name": "Project Y",
-      "priority": "Medium",
+      "name": "XR Simulation Pilot",
+      "priority": "Low",
+      "status": "Blocked",
       "contributors": [
-        { "unit": "CI", "role": "LMD" },
-        { "unit": "PS", "role": "Lead" },
-        { "unit": "EE", "role": "Director of Cybernetic Design" }
+        { "unit": "EE", "role": "Exec Director" },
+        { "unit": "PS", "role": "Lead" }
       ]
     }
   ]
